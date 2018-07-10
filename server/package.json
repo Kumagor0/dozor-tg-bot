@@ -9,7 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "node-telegram-bot-api": "^0.30.0"
+    "node-telegram-bot-api": "^0.30.0",
+    "ramda": "^0.25.0"
   },
   "devDependencies": {
     "eslint": "^5.1.0",
