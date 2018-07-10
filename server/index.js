@@ -7,6 +7,11 @@ const bot = new TelegramBot(ANUTA_TOKEN, { polling: true });
 
 const permutations = require('./permutations');
 
+const sendResponse = (msg, response) =>
+  bot.sendMessage(msg.chat.id, response, {
+    reply_to_message_id: msg.message_id,
+  });
+
 bot.onText(/\/rstv (.+)/, (msg, match) => {
   const regexp = new RegExp(match[1], 'i');
 
@@ -14,36 +19,30 @@ bot.onText(/\/rstv (.+)/, (msg, match) => {
     regexp.test(streetName)
   );
 
-  const chatId = msg.chat.id;
-
   if (allStreets.length) {
     if (allStreets.length > 10) {
-      bot.sendMessage(
-        chatId,
+      sendResponse(
+        msg,
         `Всего найдено улиц по маске ${match[1]}: ${
           allStreets.length
         }\nПоказываю первые 10:\n${allStreets.slice(0, 10).join('\n')}`
       );
     } else {
-      bot.sendMessage(
-        chatId,
+      sendResponse(
+        msg,
         `Всего найдено улиц по маске ${match[1]}: ${
           allStreets.length
         }\n${allStreets.join('\n')}`
       );
     }
   } else {
-    bot.sendMessage(chatId, `Ничего не нашлось!`);
+    sendResponse(msg, `Ничего не нашлось!`);
   }
 });
 
 bot.onText(/\/rstv_ngrm (.+)/, (msg, match) => {
-  const chatId = msg.chat.id;
   if (match[1].length > 9) {
-    return bot.sendMessage(
-      chatId,
-      `Строка слишком длинная (максимум 9 символов)`
-    );
+    return sendResponse(msg, `Строка слишком длинная (максимум 9 символов)`);
   }
 
   const results = permutations(match[1])
@@ -57,12 +56,12 @@ bot.onText(/\/rstv_ngrm (.+)/, (msg, match) => {
     })
     .filter(({ streets }) => streets.length > 0);
 
-  if (!results.length) return bot.sendMessage(chatId, `Ничего не нашлось!`);
+  if (!results.length) return sendResponse(msg, `Ничего не нашлось!`);
 
   const answer = results.map(({ permutation, streets }) =>
     getSearchResultsString(permutation, streets)
   );
-  bot.sendMessage(chatId, answer.join('\n\n'));
+  sendResponse(msg, answer.join('\n\n'));
 });
 
 const getSearchResultsString = (query, results) => {
