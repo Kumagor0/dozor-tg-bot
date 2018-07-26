@@ -163,7 +163,7 @@ module.exports = bot => {
       13
     );
 
-  bot.onText(/\/rstv_starmap (\d+),? ?(\d+|\D+)/, (msg, match) => {
+  bot.onText(/\/rstv_starmap (\d+),? ?(\d+|\D+)$/, (msg, match) => {
     const latitudeSegmentNumber = parseInt(match[1]);
 
     if (!latitudeSegmentNumber || latitudeSegmentNumber > latitudeSegments) {
