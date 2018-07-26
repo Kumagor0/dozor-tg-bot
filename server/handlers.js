@@ -1,10 +1,17 @@
 const help = require('./help.js');
 const rstv = require('./rstv.js');
+const morse = require('./morse.js');
+const lya = require('./lya.js');
+const greekAlphabet = require('./greekAlphabet');
 
 const SendResponse = require('./sendResponse');
 
 module.exports = bot => {
   const sendResponse = SendResponse(bot);
+
+  help(bot);
+  rstv(bot);
+  morse(bot);
 
   bot.onText(/^\/start$/, msg => {
     if (msg.chat.type === 'private') {
@@ -19,14 +26,16 @@ module.exports = bot => {
     }
   });
 
-  bot.onText(/^\/lya (-?\d+\.?\d*) (-?\d+\.?\d*) ?(\d*)$/, (msg, match) => {
-    sendResponse(
-      msg,
-      `https://yandex.ru/maps/?ll=${match[2]}%2C${match[1]}&z=${match[3] ||
-        '10'}`
-    );
+  bot.onText(/^\/lya (-?\d+\.?\d*),? (-?\d+\.?\d*) ?(\d*)$/, (msg, match) => {
+    sendResponse(msg, lya(...match.slice(1, 4)));
   });
 
-  help(bot);
-  rstv(bot);
+  bot.onText(/^\/greek$/, msg => {
+    sendResponse(
+      msg,
+      greekAlphabet
+        .map(({ letter, name }, i) => `${i + 1} ${letter} ${name}`)
+        .join('\n')
+    );
+  });
 };

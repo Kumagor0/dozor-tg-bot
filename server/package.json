@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "morsify": "^0.5.2",
     "node-telegram-bot-api": "^0.30.0",
     "ramda": "^0.25.0"
   },
