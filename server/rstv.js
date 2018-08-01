@@ -9,11 +9,11 @@ const getSearchResultsString = (query, results) => {
   if (results.length > 10) {
     return `Всего найдено улиц по маске ${query}: ${
       results.length
-    }\nПоказываю первые 10:\n${results.slice(0, 10).join('\n')}`;
+      }\nПоказываю первые 10:\n${results.slice(0, 10).join('\n')}`;
   } else {
     return `Всего найдено улиц по маске ${query}: ${
       results.length
-    }\n${results.join('\n')}`;
+      }\n${results.join('\n')}`;
   }
 };
 
@@ -32,14 +32,14 @@ module.exports = bot => {
         sendResponse(
           msg,
           `Всего найдено улиц по маске ${match[1]}: ${
-            allStreets.length
+          allStreets.length
           }\nПоказываю первые 10:\n${allStreets.slice(0, 10).join('\n')}`
         );
       } else {
         sendResponse(
           msg,
           `Всего найдено улиц по маске ${match[1]}: ${
-            allStreets.length
+          allStreets.length
           }\n${allStreets.join('\n')}`
         );
       }
@@ -77,7 +77,7 @@ module.exports = bot => {
   const minLatitude = 46899000;
   const maxLatitude = 47525000;
   const minLongitude = 39338000;
-  const maxLongitude = 40419200;
+  const maxLongitude = 40427800;
 
   const latitudeSegments = 107;
 
@@ -153,12 +153,12 @@ module.exports = bot => {
       (
         minLatitude / mil +
         (latitudeSegments - latitudeSegmentNumber + 0.5) *
-          ((maxLatitude - minLatitude) / mil / latitudeSegments)
+        ((maxLatitude - minLatitude) / mil / latitudeSegments)
       ).toFixed(6),
       (
         minLongitude / mil +
         (longitudeSegmentNumber - 1 + 0.5) *
-          ((maxLongitude - minLongitude) / mil / longitudeSegments)
+        ((maxLongitude - minLongitude) / mil / longitudeSegments)
       ).toFixed(6),
       13
     );
