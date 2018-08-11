@@ -1,16 +1,23 @@
 const fs = require('fs');
 const rostovStreets = fs.readFileSync('./rostovStreets', 'utf8').split(/\n/g);
+const R = require('ramda');
+const rostovStreetsNamesOnlyArrays = R.compose(
+  R.map(R.split('')),
+  R.map(R.toLower),
+  R.uniq
+)(fs.readFileSync('./rostovStreetsNamesOnly', 'utf8').split(/\n/g));
 const lya = require('./lya.js');
 
 const permutations = require('./permutations');
 const SendResponse = require('./sendResponse');
 const onText = require('./onText');
+const isSubset = require('./isSubset');
 
 const getSearchResultsString = (query, results) => {
-  if (results.length > 10) {
+  if (results.length > 30) {
     return `Всего найдено улиц по маске ${query}: ${
       results.length
-    }\nПоказываю первые 10:\n${results.slice(0, 10).join('\n')}`;
+    }\nПоказываю первые 30:\n${results.slice(0, 30).join('\n')}`;
   } else {
     return `Всего найдено улиц по маске ${query}: ${
       results.length
@@ -33,12 +40,12 @@ module.exports = bot => {
       );
 
       if (allStreets.length) {
-        if (allStreets.length > 10) {
+        if (allStreets.length > 30) {
           sendResponse(
             msg,
             `Всего найдено улиц по маске ${match[1]}: ${
               allStreets.length
-            }\nПоказываю первые 10:\n${allStreets.slice(0, 10).join('\n')}`
+            }\nПоказываю первые 30:\n${allStreets.slice(0, 30).join('\n')}`
           );
         } else {
           sendResponse(
@@ -270,6 +277,37 @@ module.exports = bot => {
         `Некорректное обозначение долготы. Допустимые варианты: целые числа от 1 до ${longitudeSegments}, либо одна или несколько прописных греческих букв (без пробелов), либо русские названия одной или нескольких греческих букв, разделённые пробелами (см. /greek).`
       );
       return;
+    }
+  );
+
+  handleCommands(
+    [/^\/rstv_nb (.+)/, /^\/nb (.+)/, /^nb (.+)/, /^нб (.+)/],
+    (msg, match) => {
+      const letters = match[1];
+      const lettersArr = letters.split('').map(R.toLower);
+      const allStreets = rostovStreetsNamesOnlyArrays
+        .filter(street => isSubset(street, lettersArr))
+        .map(street => street.join(''));
+
+      if (allStreets.length) {
+        if (allStreets.length > 30) {
+          sendResponse(
+            msg,
+            `Всего найдено улиц по набору букв ${letters}: ${
+              allStreets.length
+            }\nПоказываю первые 30:\n${allStreets.slice(0, 30).join('\n')}`
+          );
+        } else {
+          sendResponse(
+            msg,
+            `Всего найдено улиц по набору букв ${letters}: ${
+              allStreets.length
+            }\n${allStreets.join('\n')}`
+          );
+        }
+      } else {
+        sendResponse(msg, `Ничего не нашлось!`);
+      }
     }
   );
 };
