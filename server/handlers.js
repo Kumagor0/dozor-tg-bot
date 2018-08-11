@@ -7,9 +7,19 @@ const greekAlphabet = require('./greekAlphabet');
 const SendResponse = require('./sendResponse');
 const onText = require('./onText');
 
+const startTime = Date.now();
+const logs = [];
+const fs = require('fs');
+
 module.exports = bot => {
   const sendResponse = SendResponse(bot);
   const handleCommands = onText(bot);
+
+  bot.onText(/.+/, msg => {
+    console.log(msg);
+    logs.push(msg);
+    fs.writeFileSync(`log_${startTime}.json`, JSON.stringify(logs));
+  });
 
   help(bot);
   rstv(bot);
