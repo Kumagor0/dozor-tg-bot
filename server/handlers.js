@@ -5,9 +5,11 @@ const lya = require('./lya.js');
 const greekAlphabet = require('./greekAlphabet');
 
 const SendResponse = require('./sendResponse');
+const onText = require('./onText');
 
 module.exports = bot => {
   const sendResponse = SendResponse(bot);
+  const handleCommands = onText(bot);
 
   help(bot);
   rstv(bot);
@@ -26,11 +28,18 @@ module.exports = bot => {
     }
   });
 
-  bot.onText(/^\/lya (-?\d+\.?\d*),? (-?\d+\.?\d*) ?(\d*)$/, (msg, match) => {
-    sendResponse(msg, lya(...match.slice(1, 4)));
-  });
+  handleCommands(
+    [
+      /^\/lya (-?\d+\.?\d*),? (-?\d+\.?\d*) ?(\d*)$/,
+      /^lya (-?\d+\.?\d*),? (-?\d+\.?\d*) ?(\d*)$/,
+      /^як (-?\d+\.?\d*),? (-?\d+\.?\d*) ?(\d*)$/,
+    ],
+    (msg, match) => {
+      sendResponse(msg, lya(...match.slice(1, 4)));
+    }
+  );
 
-  bot.onText(/^\/greek$/, msg => {
+  handleCommands([/^\/greek$/, /^greek$/, /^греч$/], msg => {
     sendResponse(
       msg,
       greekAlphabet

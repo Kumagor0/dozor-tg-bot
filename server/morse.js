@@ -1,10 +1,11 @@
 const SendResponse = require('./sendResponse');
 const morsify = require('morsify');
+const onText = require('./onText');
 
 module.exports = bot => {
   const sendResponse = SendResponse(bot);
 
-  bot.onText(/\/morse (.+)/, (msg, match) => {
+  onText(bot)([/^\/morse (.+)/, /^morse (.+)/, /^мрз (.+)/], (msg, match) => {
     try {
       sendResponse(
         msg,
