@@ -1,6 +1,7 @@
 const help = require('./help.js');
 const rstv = require('./rstv.js');
 const morse = require('./morse.js');
+const points = require('./points.js');
 const lya = require('./lya.js');
 const greekAlphabet = require('./greekAlphabet');
 
@@ -24,6 +25,7 @@ module.exports = bot => {
   help(bot);
   rstv(bot);
   morse(bot);
+  points(bot);
 
   bot.onText(/^\/start$/, msg => {
     if (msg.chat.type === 'private') {
